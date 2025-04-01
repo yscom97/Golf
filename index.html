@@ -35,7 +35,6 @@
     .user-item:last-child {
       border-bottom: none;
     }
-    /* 데스크탑/태블릿용 입력 크기 */
     .user-item input[type="number"],
     .user-item input[type="text"] {
       width: 80px;
@@ -59,25 +58,45 @@
       padding: 5px;
     }
     
-    /* 모바일 환경: 입력 박스 크기를 줄여 한 줄에 모두 표시 */
-    @media (max-width: 480px) {
+    /* 팀 구성 옵션 영역 */
+    .team-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .team-options label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      /* 데스크탑에서는 한 줄로, 모바일에서는 줄바꿈 */
+      min-width: 150px;
+    }
+    .team-options input[type="number"],
+    .team-options select {
+      width: 80px;
+      box-sizing: border-box;
+    }
+    
+    /* 반응형 미디어 쿼리 */
+    @media (max-width: 768px) {
       body {
         margin: 10px;
       }
       .container {
         padding: 8px;
       }
-      /* flex-wrap은 유지하여 한 줄에 강제로 배치 */
+      /* 모바일에서는 한 줄에 너무 많으면 줄바꿈 */
       .user-item {
         flex-wrap: nowrap;
       }
-      /* 입력 크기를 축소 */
       .user-item input[type="number"],
       .user-item input[type="text"] {
-        width: 60px;
         max-width: 60px;
       }
-      /* 버튼 및 폰트 사이즈 조정 */
+    }
+    
+    @media (max-width: 480px) {
       h1 {
         font-size: 1.5em;
       }
@@ -87,11 +106,23 @@
       .actions button, select, input[type="number"], input[type="text"] {
         font-size: 0.9em;
       }
+      /* 팀 구성 옵션은 모바일에서 한 줄씩 표시하도록 */
+      .team-options {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .team-options label {
+        width: 100%;
+      }
+      .team-options input[type="number"],
+      .team-options select {
+        width: 100px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>팀 구성 웹페이지 (반응형, 입력 박스 축소)</h1>
+  <h1>팀 구성 웹페이지 (반응형, 입력 박스 축소 및 옵션 정리)</h1>
   
   <!-- 플레이어 목록 영역 -->
   <div class="container" id="userContainer">
@@ -104,18 +135,20 @@
   <!-- 팀 구성 옵션 영역 -->
   <div class="container">
     <h2>팀 구성 옵션</h2>
-    <label id="teamCountLabel">
-      팀 개수:
-      <input type="number" id="teamCount" value="2" min="1">
-    </label>
-    <label>
-      팀 구성 방법:
-      <select id="method">
-        <option value="random">랜덤</option>
-        <option value="similar">핸디가 비슷한 사람끼리</option>
-        <option value="balance">팀별 핸디 균형</option>
-      </select>
-    </label>
+    <div class="team-options">
+      <label id="teamCountLabel">
+        팀 개수:
+        <input type="number" id="teamCount" value="2" min="1">
+      </label>
+      <label>
+        팀 구성 방법:
+        <select id="method">
+          <option value="random">랜덤</option>
+          <option value="similar">핸디 비슷</option>
+          <option value="balance">핸디 균형</option>
+        </select>
+      </label>
+    </div>
     <p>※ 팀장이 선택되면 팀 개수 입력은 무시됩니다.</p>
   </div>
   
