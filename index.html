@@ -2,54 +2,179 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>팀 구성 웹페이지 (3명 또는 4명 팀)</title>
+  <title>팀 구성 웹페이지 (정렬, 결과 저장/불러오기)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
       background-color: #f9f9f9;
     }
-    .user-list, .result-area {
+    h1, h2 {
+      color: #333;
+    }
+    .container {
       margin-bottom: 20px;
       padding: 10px;
       background-color: #fff;
       border-radius: 4px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
-    label { display: block; margin-bottom: 5px; }
-    h1, h2 { color: #333; }
+    .user-item {
+      border-bottom: 1px solid #eee;
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-item:last-child {
+      border-bottom: none;
+    }
+    .user-item input[type="number"],
+    .user-item input[type="text"] {
+      width: 80px;
+    }
+    .actions button {
+      padding: 5px 10px;
+      margin-right: 10px;
+    }
+    select, input[type="number"] {
+      padding: 3px 5px;
+      margin-right: 10px;
+    }
+    .result-team {
+      margin-bottom: 10px;
+    }
+    .saved-item {
+      border: 1px solid #ddd;
+      margin-bottom: 5px;
+      padding: 5px;
+    }
   </style>
 </head>
 <body>
-  <h1>팀 구성 웹페이지 (3명 또는 4명 팀)</h1>
+  <h1>팀 구성 웹페이지</h1>
   
-  <!-- 사용자 선택 영역 -->
-  <div class="user-list">
-    <h2>사용자 선택</h2>
-    <label><input type="checkbox" value="User1"> User1</label>
-    <label><input type="checkbox" value="User2"> User2</label>
-    <label><input type="checkbox" value="User3"> User3</label>
-    <label><input type="checkbox" value="User4"> User4</label>
-    <label><input type="checkbox" value="User5"> User5</label>
-    <label><input type="checkbox" value="User6"> User6</label>
-    <label><input type="checkbox" value="User7"> User7</label>
-    <label><input type="checkbox" value="User8"> User8</label>
-    <label><input type="checkbox" value="User9"> User9</label>
-    <label><input type="checkbox" value="User10"> User10</label>
-    <!-- 필요한 만큼 사용자 항목 추가 -->
+  <!-- 플레이어 목록 영역 -->
+  <div class="container" id="userContainer">
+    <h2>플레이어 목록</h2>
+    <button onclick="loadDefaultPlayers()">기본 플레이어 불러오기</button>
+    <button onclick="toggleSelectAll()">전체선택/해제</button>
+    <!-- 플레이어 항목은 loadDefaultPlayers() 함수로 생성됩니다. -->
   </div>
   
-  <!-- 팀 구성 버튼 -->
-  <button onclick="makeTeams()">팀 구성하기</button>
+  <!-- 팀 구성 옵션 영역 -->
+  <div class="container">
+    <h2>팀 구성 옵션</h2>
+    <label id="teamCountLabel">
+      팀 개수:
+      <input type="number" id="teamCount" value="2" min="1">
+    </label>
+    <label>
+      팀 구성 방법:
+      <select id="method">
+        <option value="random">랜덤</option>
+        <option value="similar">핸디가 비슷한 사람끼리</option>
+        <option value="balance">팀별 핸디 균형</option>
+      </select>
+    </label>
+    <p>※ 팀장이 선택되면 팀 개수 입력은 무시됩니다.</p>
+  </div>
+  
+  <!-- 팀 구성 및 결과 저장 버튼 -->
+  <div class="actions">
+    <button onclick="makeTeams()">팀 구성하기</button>
+    <button onclick="saveResult()">현재 결과 저장</button>
+  </div>
   
   <!-- 팀 결과 출력 영역 -->
-  <div class="result-area">
+  <div class="container">
     <h2>팀 결과</h2>
     <div id="result"></div>
   </div>
   
+  <!-- 저장된 결과 조회 영역 -->
+  <div class="container">
+    <h2>저장된 팀 구성 결과</h2>
+    <button onclick="loadSavedResults()">저장된 결과 불러오기</button>
+    <div id="savedResults"></div>
+  </div>
+  
   <script>
-    // 배열을 랜덤하게 섞는 함수 (Fisher-Yates Shuffle)
+    // 기본 플레이어 목록 (핸디 기준 오름차순 정렬 예정)
+    const defaultPlayers = [
+      { name: "정호", handi: 13.8 },
+      { name: "황진우", handi: 17.3 },
+      { name: "최원표", handi: 23.4 },
+      { name: "김용상", handi: 25.5 },
+      { name: "박병용", handi: 28.5 },
+      { name: "이재현", handi: 28.6 },
+      { name: "안재선", handi: 28.8 },
+      { name: "류건우", handi: 29 },
+      { name: "조은상", handi: 29.4 },
+      { name: "정준환", handi: 40.8 },
+      { name: "정해송", handi: 49.7 }
+    ];
+    
+    // 플레이어 목록 생성: 기본 플레이어 불러오기 (핸디 낮은 순서)
+    function loadDefaultPlayers() {
+      // 핸디 오름차순 정렬
+      const sortedPlayers = defaultPlayers.slice().sort((a, b) => a.handi - b.handi);
+      const container = document.getElementById('userContainer');
+      // 기존 내용 초기화 (제목 및 버튼 재삽입)
+      container.innerHTML = '<h2>플레이어 목록</h2>' +
+        '<button onclick="loadDefaultPlayers()">기본 플레이어 불러오기</button> ' +
+        '<button onclick="toggleSelectAll()">전체선택/해제</button>';
+      
+      sortedPlayers.forEach((player, index) => {
+        const div = document.createElement('div');
+        div.className = 'user-item';
+        
+        // 체크박스와 이름 입력
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'select-user';
+        label.appendChild(checkbox);
+        
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'user-name';
+        nameInput.value = player.name;
+        label.appendChild(nameInput);
+        div.appendChild(label);
+        
+        // 핸디 입력
+        const handiSpan = document.createElement('span');
+        handiSpan.textContent = '핸디: ';
+        div.appendChild(handiSpan);
+        const handiInput = document.createElement('input');
+        handiInput.type = 'number';
+        handiInput.className = 'handi';
+        handiInput.value = player.handi;
+        div.appendChild(handiInput);
+        
+        // 팀장 여부 체크박스
+        const leaderLabel = document.createElement('label');
+        leaderLabel.style.marginLeft = '10px';
+        leaderLabel.textContent = '팀장: ';
+        const leaderInput = document.createElement('input');
+        leaderInput.type = 'checkbox';
+        leaderInput.className = 'leader';
+        leaderLabel.appendChild(leaderInput);
+        div.appendChild(leaderLabel);
+        
+        container.appendChild(div);
+      });
+    }
+    
+    // 전체선택/해제 기능
+    function toggleSelectAll() {
+      const checkboxes = document.querySelectorAll('.select-user');
+      const allChecked = Array.from(checkboxes).every(chk => chk.checked);
+      checkboxes.forEach(chk => chk.checked = !allChecked);
+    }
+    
+    // 배열 섞기 (Fisher-Yates)
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -58,69 +183,161 @@
       return array;
     }
     
-    // 주어진 인원 수를 4명 팀(x개)과 3명 팀(y개)로 나눌 수 있는 분배를 찾는 함수
-    function computeTeamDistribution(numUsers) {
-      // 최대 4명 팀 개수를 구한 후, 가능한 조합을 탐색
-      for (let x = Math.floor(numUsers / 4); x >= 0; x--) {
-        let remainder = numUsers - 4 * x;
-        if (remainder % 3 === 0) {
-          let y = remainder / 3;
-          return { num4: x, num3: y };
-        }
-      }
-      return null; // 정확하게 나눌 수 없는 경우
+    // 할당 방법: 랜덤 (라운드로빈)
+    function assignRandom(players, teams) {
+      shuffle(players);
+      let teamCount = teams.length;
+      players.forEach((player, idx) => {
+        teams[idx % teamCount].push(player);
+      });
     }
     
+    // 할당 방법: 핸디가 비슷한 사람끼리 (정렬 후 균등 분할)
+    function assignBySimilarHandi(players, teams) {
+      players.sort((a, b) => a.handi - b.handi);
+      let teamCount = teams.length;
+      let segmentSize = Math.ceil(players.length / teamCount);
+      for (let i = 0; i < teamCount; i++) {
+        let segment = players.slice(i * segmentSize, (i + 1) * segmentSize);
+        teams[i] = teams[i].concat(segment);
+      }
+    }
+    
+    // 할당 방법: 팀별 핸디 균형 (그리디 할당)
+    function assignBalanced(players, teams) {
+      function getTeamHandi(team) {
+        return team.reduce((sum, p) => sum + p.handi, 0);
+      }
+      players.sort((a, b) => b.handi - a.handi);
+      players.forEach(player => {
+        let minTeam = teams[0];
+        let minIndex = 0;
+        teams.forEach((team, index) => {
+          if (getTeamHandi(team) < getTeamHandi(minTeam)) {
+            minTeam = team;
+            minIndex = index;
+          }
+        });
+        teams[minIndex].push(player);
+      });
+    }
+    
+    // 팀 구성 함수
     function makeTeams() {
-      // 선택된 사용자 목록을 배열에 담기
-      const checkboxes = document.querySelectorAll('.user-list input[type="checkbox"]');
+      const userItems = document.querySelectorAll('.user-item');
       let selectedUsers = [];
-      checkboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-          selectedUsers.push(checkbox.value);
+      
+      userItems.forEach(item => {
+        const selectChk = item.querySelector('.select-user');
+        if (selectChk && selectChk.checked) {
+          const name = item.querySelector('.user-name').value.trim();
+          const handiVal = parseFloat(item.querySelector('.handi').value) || 0;
+          const leaderChk = item.querySelector('.leader').checked;
+          selectedUsers.push({ name, handi: handiVal, isLeader: leaderChk });
         }
       });
       
-      const numUsers = selectedUsers.length;
-      if (numUsers === 0) {
-        alert("팀에 포함할 사용자를 선택하세요.");
+      if (selectedUsers.length === 0) {
+        alert("팀에 포함할 플레이어를 선택하세요.");
         return;
       }
       
-      // 3명 또는 4명 팀으로 나눌 수 있는 분배 계산
-      const distribution = computeTeamDistribution(numUsers);
-      if (!distribution) {
-        alert("선택된 사용자 수(" + numUsers + "명)로는 3명 또는 4명으로 구성된 팀을 정확하게 만들 수 없습니다.");
-        return;
+      // 팀장 모드: 팀장이 한 명 이상 선택되면 팀 수는 팀장 수로 결정
+      let leaders = selectedUsers.filter(u => u.isLeader);
+      let regulars = selectedUsers.filter(u => !u.isLeader);
+      let teams = [];
+      
+      if (leaders.length > 0) {
+        teams = leaders.map(leader => [leader]);
+      } else {
+        const teamCount = parseInt(document.getElementById('teamCount').value);
+        if (isNaN(teamCount) || teamCount < 1) {
+          alert("유효한 팀 개수를 입력하세요.");
+          return;
+        }
+        if (teamCount > selectedUsers.length) {
+          alert("팀 개수는 선택된 플레이어 수보다 클 수 없습니다.");
+          return;
+        }
+        teams = [];
+        for (let i = 0; i < teamCount; i++) {
+          teams.push([]);
+        }
+        regulars = selectedUsers.slice();
       }
       
-      // 사용자 배열 무작위 섞기
-      shuffle(selectedUsers);
-      
-      const teams = [];
-      let index = 0;
-      
-      // 우선 4명 팀 구성 (계산된 distribution.num4 만큼)
-      for (let i = 0; i < distribution.num4; i++) {
-        teams.push(selectedUsers.slice(index, index + 4));
-        index += 4;
-      }
-      
-      // 그 다음 3명 팀 구성 (계산된 distribution.num3 만큼)
-      for (let i = 0; i < distribution.num3; i++) {
-        teams.push(selectedUsers.slice(index, index + 3));
-        index += 3;
+      // 팀 구성 방식에 따라 regulars(팀장이 아닌 플레이어)를 할당
+      const method = document.getElementById('method').value;
+      if (method === "random") {
+        assignRandom(regulars, teams);
+      } else if (method === "similar") {
+        assignBySimilarHandi(regulars, teams);
+      } else if (method === "balance") {
+        assignBalanced(regulars, teams);
       }
       
       // 결과 출력
       const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = ""; // 이전 결과 초기화
-      teams.forEach((team, i) => {
+      resultDiv.innerHTML = "";
+      teams.forEach((team, idx) => {
         const teamDiv = document.createElement('div');
-        teamDiv.style.marginBottom = "10px";
-        teamDiv.innerHTML = `<strong>팀 ${i + 1}:</strong> ${team.join(", ")}`;
+        teamDiv.className = "result-team";
+        let members = team.map(p => `${p.name} (핸디: ${p.handi})`);
+        teamDiv.innerHTML = `<strong>팀 ${idx + 1}:</strong> ${members.join(", ")}`;
         resultDiv.appendChild(teamDiv);
       });
+    }
+    
+    // 결과 저장: 현재 팀 결과를 로컬 스토리지에 저장 (저장 시 타임스탬프 부여)
+    function saveResult() {
+      const resultDiv = document.getElementById('result');
+      const resultContent = resultDiv.innerHTML;
+      if (!resultContent.trim()) {
+        alert("저장할 결과가 없습니다. 먼저 팀을 구성하세요.");
+        return;
+      }
+      const timestamp = new Date().toLocaleString();
+      const savedEntry = {
+        time: timestamp,
+        content: resultContent
+      };
+      // 기존 저장된 결과 불러오기
+      let savedResults = JSON.parse(localStorage.getItem("savedTeamResults")) || [];
+      savedResults.push(savedEntry);
+      localStorage.setItem("savedTeamResults", JSON.stringify(savedResults));
+      alert("팀 구성 결과가 저장되었습니다.");
+    }
+    
+    // 저장된 결과 불러오기: 로컬 스토리지에 저장된 결과를 목록으로 표시
+    function loadSavedResults() {
+      const savedResultsDiv = document.getElementById('savedResults');
+      savedResultsDiv.innerHTML = "";
+      let savedResults = JSON.parse(localStorage.getItem("savedTeamResults")) || [];
+      if (savedResults.length === 0) {
+        savedResultsDiv.innerHTML = "<p>저장된 결과가 없습니다.</p>";
+        return;
+      }
+      savedResults.forEach((entry, index) => {
+        const div = document.createElement('div');
+        div.className = "saved-item";
+        div.innerHTML = `<strong>${entry.time}</strong> 
+          <button onclick="viewSavedResult(${index})">보기</button>`;
+        savedResultsDiv.appendChild(div);
+      });
+    }
+    
+    // 저장된 결과 보기: 선택한 저장 결과를 팀 결과 영역에 표시
+    function viewSavedResult(index) {
+      let savedResults = JSON.parse(localStorage.getItem("savedTeamResults")) || [];
+      if (index < 0 || index >= savedResults.length) return;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = savedResults[index].content;
+      alert("저장된 결과를 불러왔습니다.");
+    }
+    
+    // 페이지 로드 시 기본 플레이어 목록 자동 로드 (정렬된 순서)
+    window.onload = function() {
+      loadDefaultPlayers();
     }
   </script>
 </body>
