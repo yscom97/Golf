@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>골프 라운드 시상식</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f7f9fc;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .award-title {
+      display: inline-block;
+      background: #4f46e5;
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .player-name {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .reason {
+      font-size: 0.95rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏆 골프 라운드 시상식</h1>
+    <div class="grid">
+      <div class="card">
+        <div class="player-name">Bradley Park (박병용 朴炳庸)</div>
+        <div class="award-title">최저 Net 스코어상 (Best Net)</div>
+        <div class="reason">Net 스코어 69.5로 전체 참가자 중 가장 낮은 성적</div>
+      </div>
+      <div class="card">
+        <div class="player-name">류건우 (Ryu 柳建宇)</div>
+        <div class="award-title">정확한 경기 운영상 (Consistent Player)</div>
+        <div class="reason">Gross 98 / Net 71의 전략적 경기 운영</div>
+      </div>
+      <div class="card">
+        <div class="player-name">崔元彪</div>
+        <div class="award-title">긍정의 아이콘상 (Never Give Up)</div>
+        <div class="reason">높은 핸디캡에도 불구하고 끝까지 포기하지 않음</div>
+      </div>
+      <div class="card">
+        <div class="player-name">이재현 (Jaehyeon Lee)</div>
+        <div class="award-title">기량 향상 유망주상 (Most Improved Potential)</div>
+        <div class="reason">성장 가능성이 높은 플레이어 (Net 78.4)</div>
+      </div>
+      <div class="card">
+        <div class="player-name">정호 (郑浩)</div>
+        <div class="award-title">핸디캡 대비 최고 효율상 (Hidden Champion)</div>
+        <div class="reason">낮은 핸디캡에도 Net 73.2 기록</div>
+      </div>
+      <div class="card">
+        <div class="player-name">황진우 (黄振瑀)</div>
+        <div class="award-title">정교한 경기력상 (Technical Shotmaker)</div>
+        <div class="reason">Gross 88 / Net 70.7의 정교한 샷</div>
+      </div>
+      <div class="card">
+        <div class="player-name">Yongsang Kim</div>
+        <div class="award-title">버디 헌터상 (Birdie Magnet)</div>
+        <div class="reason">다수 홀에서 공격적인 플레이가 인상적</div>
+      </div>
+      <div class="card">
+        <div class="player-name">조은상 (赵殷祥)</div>
+        <div class="award-title">꾸준한 플레이어상 (Steady Player)</div>
+        <div class="reason">기복 없이 안정적인 경기 운영 (Net 75.6)</div>
+      </div>
+      <div class="card">
+        <div class="player-name">Ryan Ahn</div>
+        <div class="award-title">차세대 기대주상 (Rising Star)</div>
+        <div class="reason">적극적인 경기력으로 눈에 띔</div>
+      </div>
+      <div class="card">
+        <div class="player-name">Justin</div>
+        <div class="award-title">화끈한 한 방상 (Power Shot Award)</div>
+        <div class="reason">어려운 홀에서 파워 샷 인상적</div>
+      </div>
+      <div class="card">
+        <div class="player-name">Haiker</div>
+        <div class="award-title">지속 가능한 플레이상 (Sustainable Golfer)</div>
+        <div class="reason">자신만의 페이스로 완주한 점이 인상적</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
