@@ -1,26 +1,127 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나의 GitHub Pages 웹사이트</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
-            margin: 40px;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #666;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>팀 구성 웹페이지 (3명 또는 4명 팀)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    .user-list, .result-area {
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    label { display: block; margin-bottom: 5px; }
+    h1, h2 { color: #333; }
+  </style>
 </head>
 <body>
-    <h1>안녕하세요!</h1>
-    <p>GitHub Pages로 만든 첫 번째 웹페이지입니다.</p>
+  <h1>팀 구성 웹페이지 (3명 또는 4명 팀)</h1>
+  
+  <!-- 사용자 선택 영역 -->
+  <div class="user-list">
+    <h2>사용자 선택</h2>
+    <label><input type="checkbox" value="User1"> User1</label>
+    <label><input type="checkbox" value="User2"> User2</label>
+    <label><input type="checkbox" value="User3"> User3</label>
+    <label><input type="checkbox" value="User4"> User4</label>
+    <label><input type="checkbox" value="User5"> User5</label>
+    <label><input type="checkbox" value="User6"> User6</label>
+    <label><input type="checkbox" value="User7"> User7</label>
+    <label><input type="checkbox" value="User8"> User8</label>
+    <label><input type="checkbox" value="User9"> User9</label>
+    <label><input type="checkbox" value="User10"> User10</label>
+    <!-- 필요한 만큼 사용자 항목 추가 -->
+  </div>
+  
+  <!-- 팀 구성 버튼 -->
+  <button onclick="makeTeams()">팀 구성하기</button>
+  
+  <!-- 팀 결과 출력 영역 -->
+  <div class="result-area">
+    <h2>팀 결과</h2>
+    <div id="result"></div>
+  </div>
+  
+  <script>
+    // 배열을 랜덤하게 섞는 함수 (Fisher-Yates Shuffle)
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    
+    // 주어진 인원 수를 4명 팀(x개)과 3명 팀(y개)로 나눌 수 있는 분배를 찾는 함수
+    function computeTeamDistribution(numUsers) {
+      // 최대 4명 팀 개수를 구한 후, 가능한 조합을 탐색
+      for (let x = Math.floor(numUsers / 4); x >= 0; x--) {
+        let remainder = numUsers - 4 * x;
+        if (remainder % 3 === 0) {
+          let y = remainder / 3;
+          return { num4: x, num3: y };
+        }
+      }
+      return null; // 정확하게 나눌 수 없는 경우
+    }
+    
+    function makeTeams() {
+      // 선택된 사용자 목록을 배열에 담기
+      const checkboxes = document.querySelectorAll('.user-list input[type="checkbox"]');
+      let selectedUsers = [];
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          selectedUsers.push(checkbox.value);
+        }
+      });
+      
+      const numUsers = selectedUsers.length;
+      if (numUsers === 0) {
+        alert("팀에 포함할 사용자를 선택하세요.");
+        return;
+      }
+      
+      // 3명 또는 4명 팀으로 나눌 수 있는 분배 계산
+      const distribution = computeTeamDistribution(numUsers);
+      if (!distribution) {
+        alert("선택된 사용자 수(" + numUsers + "명)로는 3명 또는 4명으로 구성된 팀을 정확하게 만들 수 없습니다.");
+        return;
+      }
+      
+      // 사용자 배열 무작위 섞기
+      shuffle(selectedUsers);
+      
+      const teams = [];
+      let index = 0;
+      
+      // 우선 4명 팀 구성 (계산된 distribution.num4 만큼)
+      for (let i = 0; i < distribution.num4; i++) {
+        teams.push(selectedUsers.slice(index, index + 4));
+        index += 4;
+      }
+      
+      // 그 다음 3명 팀 구성 (계산된 distribution.num3 만큼)
+      for (let i = 0; i < distribution.num3; i++) {
+        teams.push(selectedUsers.slice(index, index + 3));
+        index += 3;
+      }
+      
+      // 결과 출력
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = ""; // 이전 결과 초기화
+      teams.forEach((team, i) => {
+        const teamDiv = document.createElement('div');
+        teamDiv.style.marginBottom = "10px";
+        teamDiv.innerHTML = `<strong>팀 ${i + 1}:</strong> ${team.join(", ")}`;
+        resultDiv.appendChild(teamDiv);
+      });
+    }
+  </script>
 </body>
 </html>
