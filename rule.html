@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>업무 정보 페이지</title>
+  <style>
+    /* 공통 스타일 초기화 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+      line-height: 1.4;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* 섹션 컨테이너 스타일 */
+    section {
+      background-color: #ffffff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    /* 테이블 기본 스타일 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      table-layout: auto; /* 혹은 fixed */
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #eee;
+      font-weight: 600;
+    }
+
+    /* 강조 셀 예시 */
+    .highlight {
+      background-color: #ffffcc;
+    }
+
+    /* 반응형 테이블 처리:
+       화면 폭이 좁아지면 각 테이블을 가로 스크롤이 가능하도록 */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;  /* 좌우 스크롤 허용 */
+    }
+
+    /* 미디어 쿼리를 이용한 폰트 크기 조절 (768px 이하일 때) */
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+      th, td {
+        padding: 6px 8px;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      h2, h3 {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>업무 현황 및 규칙</h1>
+  </header>
+
+  <!-- 검색자 섹션 -->
+  <section>
+    <h2>검색자 (7명)</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>이름</th>
+            <th>역할</th>
+            <th>소속</th>
+            <th>평균 근무연수</th>
+            <th>기타</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>홍길동</td>
+            <td>주요 자료 검색</td>
+            <td>연구팀</td>
+            <td>3년</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>김철수</td>
+            <td>레이아웃 조사</td>
+            <td>개발팀</td>
+            <td>2년</td>
+            <td>-</td>
+          </tr>
+          <!-- 나머지 데이터도 동일한 형식으로 기입 -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 차량배차 섹션 -->
+  <section>
+    <h2>차량배차 (12명)</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>차수</th>
+            <th>근무 시간</th>
+            <th>근무 장소</th>
+            <th>기타</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>주간</td>
+            <td>1차</td>
+            <td>08:00 ~ 17:00</td>
+            <td>물류센터 1층</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>야간</td>
+            <td>2차</td>
+            <td>17:00 ~ 01:00</td>
+            <td>물류센터 2층</td>
+            <td>-</td>
+          </tr>
+          <!-- 나머지 데이터도 동일한 형식으로 기입 -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 콜트 조립 섹션 -->
+  <section>
+    <h2>콜트 조립 (12명)</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>직책</th>
+            <th>작업 시간</th>
+            <th>작업 장소</th>
+            <th>주요 업무</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>조립 팀장</td>
+            <td>09:00 ~ 18:00</td>
+            <td>조립라인 A</td>
+            <td>부품 조립, 품질 관리</td>
+          </tr>
+          <tr>
+            <td>조립 사원</td>
+            <td>09:00 ~ 18:00</td>
+            <td>조립라인 B</td>
+            <td>부품 세팅, 자재 공급</td>
+          </tr>
+          <!-- 나머지 데이터도 동일한 형식으로 기입 -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 개미 내기 팀 섹션 -->
+  <section>
+    <h2>개미 내기 팀</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>팀명</th>
+            <th>배정 인원</th>
+            <th>주요 담당</th>
+            <th>진행 현황</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>개미A</td>
+            <td>4</td>
+            <td>분석 & 예측</td>
+            <td class="highlight">정보 취합 중</td>
+          </tr>
+          <tr>
+            <td>개미B</td>
+            <td>4</td>
+            <td>통계 & 모델링</td>
+            <td>준비 완료</td>
+          </tr>
+          <!-- 나머지 데이터도 동일한 형식으로 기입 -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 계약 규칙 섹션 -->
+  <section>
+    <h2>계약 규칙 (즐거운 업무 환경을 위한 기본 규칙)</h2>
+    <ol>
+      <li>업무 시간 준수</li>
+      <li>정보 보안을 위한 정책 이행</li>
+      <li>프로젝트 일정 준수, 상황 발생 시 즉시 공유</li>
+      <li>팀 간 협업 시 일정과 우선순위 고려</li>
+      <li>개인정보 및 중요 문서 보안 유지</li>
+      <li>보고 체계 준수 및 긴급 사항 공유</li>
+      <li>서로 존중하고 배려하는 업무 문화 정착</li>
+      <!-- 등등 추가 가능 -->
+    </ol>
+  </section>
+
+  <footer>
+    <p>© 2025 CJ Logistics China. All rights reserved.</p>
+  </footer>
+</body>
+</html>
